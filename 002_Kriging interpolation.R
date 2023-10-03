@@ -78,9 +78,9 @@
                    #alpha = c(0, 45, 90, 135)  # Omni direction
                    #cutoff=40, 
                    #width=20,
-                   #cloud=T
-    )
+                   #cloud=T)
     plot(v0)
+                   
     # assign(paste0('lzn.fit_', i), 
     lzn.fit <- fit.variogram(v0, 
                               model=vgm(c("Exp","Sph","Gau","Lin","Ste")),
@@ -109,7 +109,6 @@
     crs(grd.irregular) = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"
     gridded(grd.irregular)  <- TRUE 
     plot(grd.irregular)
- 
     assign(paste0('grd.irregular_', i), grd.irregular)
 
     # kriging
@@ -120,6 +119,7 @@
       } else {
         lzn.kriged <- krige(density ~ x + y + I(x^2) + I(y^2) + I(x * y), df, grd.irregular, lzn.fit)
       }
+                   
     # backtransform data----
     # https://gis.stackexchange.com/questions/237574/backtransformation-of-kriging-predictions-and-variances
     bt <- exp(lzn.kriged$var1.pred + (lzn.kriged$var1.var/2))
@@ -194,9 +194,7 @@
     cellCount <- nrow(IDW_result)  # or = area@ncols*area@nrows - length(dfr[is.na(dfr)])
     result[i,4]<- cellArea * cellCount  # sum of area in km2
     result[i,5] <- sum(IDW_result$depth * cellArea * 10^(-3))  # km3  
-    
     assign(paste0('dfr_', i), rasterFromXYZ(krige_result,crs = "+proj=longlat +datum=WGS84 +no_defs"))
-    
     result[i,9] <- name
     mapview(dfr_depth)
 
